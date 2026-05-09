@@ -35,9 +35,9 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between h-20">
         {/* Logo */}
         <Link href="/" className="flex flex-col leading-none group">
-          <span className="font-script text-3xl text-blush-600 group-hover:text-blush-700 transition-colors">
-            BLVCréa
-          </span>
+<span className="font-serif italic font-medium text-3xl text-blush-600 group-hover:text-blush-700 transition-colors">
+  BLVCréa
+</span>
           <span className="font-sans text-[9px] tracking-[0.35em] uppercase text-blush-400 -mt-1">
             Macramé Artisanal
           </span>
