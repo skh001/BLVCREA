@@ -88,7 +88,9 @@ cp .env.example .env.local
 
 1. Créez un compte sur [stripe.com](https://stripe.com)
 2. Récupérez vos clés API dans le dashboard (mode test puis live)
-3. Configurez un webhook vers `/api/stripe-webhook` si besoin
+3. Configurez un webhook vers `https://votre-domaine.fr/api/stripe-webhook`
+4. Activez au minimum l'événement `checkout.session.completed`
+5. Copiez le secret de signature du webhook (`whsec_...`) dans `STRIPE_WEBHOOK_SECRET`
 
 ### 5. Configurer Resend
 
@@ -116,6 +118,7 @@ npm run dev
 | `SANITY_API_TOKEN` | Token Sanity (écriture) | `skXxx...` |
 | `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Clé publique Stripe | `pk_live_...` |
 | `STRIPE_SECRET_KEY` | Clé secrète Stripe | `sk_live_...` |
+| `STRIPE_WEBHOOK_SECRET` | Secret du webhook Stripe | `whsec_...` |
 | `RESEND_API_KEY` | Clé API Resend | `re_...` |
 | `RESEND_FROM_EMAIL` | Email d'envoi | `noreply@blvcrea.fr` |
 | `OWNER_EMAIL` | Email de la propriétaire | `proprietaire@blvcrea.fr` |
