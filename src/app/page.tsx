@@ -21,8 +21,8 @@ export default async function HomePage() {
       {/* ── Hero ──────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
 
-        {/* Layered gradient background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#fdf4f6] via-[#fdf9f7] to-[#fef6f0]" />
+        {/* Layered gradient background — INTENSIFIED VIOLET */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-100 via-fuchsia-100 to-purple-300" />
 
         {/* Animated blobs */}
         <div className="absolute top-1/4 right-1/5 w-[500px] h-[500px] rounded-full bg-blush-100/50 blur-[80px] animate-float" />
