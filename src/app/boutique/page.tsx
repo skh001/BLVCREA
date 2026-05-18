@@ -12,11 +12,10 @@ export const metadata = {
 
 const categories = [
   { value: 'all', label: 'Tout voir' },
-  { value: 'suspension', label: 'Suspensions' },
-  { value: 'rideau', label: 'Rideaux' },
-  { value: 'cadre', label: 'Cadres' },
-  { value: 'table', label: 'Table & Vase' },
-  { value: 'bijou', label: 'Bijoux' },
+  { value: 'decoration-murale', label: 'Décoration murale' },
+  { value: 'suspension-plante', label: 'Suspensions pour plantes' },
+  { value: 'attrape-reves', label: 'Attrape-rêves' },
+  { value: 'rangement-photo', label: 'Suspensions rangement/photo' },
 ];
 
 export default async function BoutiquePage({
@@ -54,8 +53,8 @@ export default async function BoutiquePage({
               href={cat.value === 'all' ? '/boutique' : `/boutique?categorie=${cat.value}`}
               className={`font-sans text-xs tracking-widest uppercase px-5 py-2.5 rounded-full border transition-all duration-200 ${
                 activeCategory === cat.value
-                  ? 'bg-blush-500 text-white border-blush-500'
-                  : 'border-rose-200 text-blush-600 hover:border-blush-300 hover:bg-petal'
+                  ? 'bg-purple-500 text-white border-purple-500'
+                  : 'border-purple-200 text-purple-700 hover:border-purple-300 hover:bg-purple-50'
               }`}
             >
               {cat.label}
@@ -72,8 +71,8 @@ export default async function BoutiquePage({
           </div>
         ) : (
           <div className="text-center py-24">
-            <p className="font-script text-6xl text-blush-200 mb-4">Vide pour l&apos;instant</p>
-            <p className="font-sans text-blush-400 mb-8">
+            <p className="font-script text-6xl text-purple-200 mb-4">Vide pour l&apos;instant</p>
+            <p className="font-sans text-purple-400 mb-8">
               {activeCategory === 'all'
                 ? 'Aucun produit disponible pour le moment.'
                 : 'Aucun produit dans cette catégorie.'}
@@ -87,12 +86,12 @@ export default async function BoutiquePage({
         )}
 
         {/* Custom order CTA */}
-        <div className="mt-20 text-center p-12 rounded-3xl bg-gradient-to-r from-blush-50 to-rose-50 border border-rose-100">
+        <div className="mt-20 text-center p-12 rounded-3xl bg-white/40 backdrop-blur-sm border border-purple-100 shadow-sm">
           <h2 className="font-serif text-3xl text-gray-800 mb-3">
             Vous ne trouvez pas ce que vous cherchez ?
           </h2>
-          <p className="font-sans text-sm text-blush-500 mb-7">
-            Chaque création peut être adaptée à vos couleurs et dimensions.
+          <p className="font-sans text-sm text-purple-600 mb-7">
+            Le tarif s'adaptera selon la taille et la complexité de votre demande.
           </p>
           <Link href="/personnalisation" className="btn-primary">
             <Palette size={16} />

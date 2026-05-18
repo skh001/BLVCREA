@@ -19,10 +19,9 @@ export default async function HomePage() {
   return (
     <>
       {/* ── Hero ──────────────────────────────────────── */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-28">
 
-        {/* Layered gradient background — INTENSIFIED VIOLET */}
-        <div className="absolute inset-0 bg-gradient-to-br from-purple-100 via-fuchsia-100 to-purple-300" />
+        {/* Le fond global est maintenant géré dans layout.tsx */}
 
         {/* Animated blobs */}
         <div className="absolute top-1/4 right-1/5 w-[500px] h-[500px] rounded-full bg-blush-100/50 blur-[80px] animate-float" />
@@ -131,13 +130,13 @@ export default async function HomePage() {
               <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
             <Link href="/personnalisation" className="btn-secondary text-sm px-10 py-4">
-              Créer ma pièce unique — 29 €
+              Créer ma pièce sur-mesure
             </Link>
           </div>
 
           {/* Trust badges */}
           <div className="animate-fade-up stagger-5 flex flex-wrap items-center justify-center gap-6">
-            {['✦ Fait main en France', '✦ Livraison soignée', '✦ Sur-mesure 29 €'].map((b) => (
+            {['✦ Fait main en France', '✦ Livraison offerte', '✦ Créations personnalisées'].map((b) => (
               <span key={b} className="font-sans text-xs tracking-wider text-blush-400/80">{b}</span>
             ))}
           </div>
@@ -152,7 +151,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Features strip ───────────────────────────── */}
-      <section className="relative bg-white py-16 border-y border-rose-50 overflow-hidden">
+      <section className="relative bg-white/50 py-16 border-y border-rose-50 overflow-hidden">
         {/* Background accent */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_#fdf0f2_0%,_transparent_70%)] opacity-40 pointer-events-none" />
 
@@ -234,7 +233,7 @@ export default async function HomePage() {
       {/* ── Custom order CTA banner ───────────────────── */}
       <section className="relative py-24 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blush-50 via-rose-50/80 to-blush-50" />
+        <div className="absolute inset-0 bg-white/20 backdrop-blur-sm" />
 
         {/* Top border ornament */}
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-blush-200 to-transparent" />
@@ -281,15 +280,14 @@ export default async function HomePage() {
             <em className="text-blush-500">notre création</em>
           </h2>
 
-          {/* Price pill */}
+          {/* Info pill */}
           <div className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-blush-200 rounded-full px-6 py-2.5 mb-6 shadow-sm">
-            <span className="font-sans text-sm text-blush-500">Prix unique</span>
-            <span className="font-serif text-xl text-blush-600 font-medium">29 €</span>
-            <span className="font-sans text-xs text-blush-400">· livraison incluse</span>
+            <span className="font-sans text-sm text-blush-500 font-medium">Prix sur devis</span>
+            <span className="font-sans text-xs text-blush-400">· livraison gratuite incluse</span>
           </div>
 
           <p className="font-sans text-base text-blush-500/80 max-w-lg mx-auto mb-10 leading-relaxed">
-            Vous avez une idée en tête ? Partagez votre inspiration et nous créerons une pièce unique rien que pour vous.
+            Le tarif s'adaptera selon la taille et la complexité de votre demande. Partagez votre inspiration (diamètre, longueur, couleurs) et nous créerons une pièce unique rien que pour vous.
           </p>
 
           <Link href="/personnalisation" className="btn-primary text-sm px-12 py-4 group">

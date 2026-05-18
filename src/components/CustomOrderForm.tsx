@@ -4,7 +4,7 @@ import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Upload, Loader2, CheckCircle, AlertCircle, X, ImageIcon } from 'lucide-react';
+import { Loader2, CheckCircle, AlertCircle, X, ImageIcon } from 'lucide-react';
 
 const COLOR_OPTIONS = [
   { value: 'Blanc naturel', bg: '#f9f4f0', border: '#e0d5cc', dark: false },
@@ -18,11 +18,14 @@ const COLOR_OPTIONS = [
 ];
 
 const schema = z.object({
-  name:        z.string().min(2,  'Prénom et nom requis (minimum 2 caractères)'),
+  name:        z.string().min(2,  'Prénom et nom requis'),
   email:       z.string().email('Adresse email invalide'),
   phone:       z.string().optional(),
-  color:       z.string().min(1,  'Veuillez choisir une couleur'),
-  description: z.string().min(20, 'Décrivez votre projet (minimum 20 caractères)'),
+  color:       z.string().min(1,  'Veuillez choisir une couleur principale'),
+  modele:      z.string().min(2, 'Précisez le type de création (ex: Attrape-rêves)'),
+  diametre:    z.string().optional(),
+  longueur:    z.string().optional(),
+  description: z.string().min(10, 'Précisez votre demande (minimum 10 caractères)'),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -97,10 +100,22 @@ export default function CustomOrderForm() {
     setFormStatus('loading');
     setErrorMsg('');
     try {
+      // Regroupement des champs dans la description pour l'API
+      const fullDescription = `Modèle : ${data.modele}\nDiamètre : ${data.diametre || 'Non précisé'}\nLongueur : ${data.longueur || 'Non précisée'}\n\nDétails :\n${data.description}`;
+      
+      const payload = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        color: data.color,
+        description: fullDescription,
+        imageUrl: imageUrl
+      };
+
       const res = await fetch('/api/custom-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, imageUrl }),
+        body: JSON.stringify(payload),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Erreur inconnue');
@@ -121,15 +136,15 @@ export default function CustomOrderForm() {
         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-50 border border-green-100 mb-6">
           <CheckCircle size={36} className="text-green-500" />
         </div>
-        <h3 className="font-serif text-3xl text-gray-800 mb-3">Commande envoyée ! 🌸</h3>
-        <p className="font-sans text-blush-500 max-w-md mx-auto leading-relaxed mb-3">
-          Merci ! Vous allez recevoir un email avec un lien pour régler votre commande de <strong>29 €</strong>.
+        <h3 className="font-serif text-3xl text-gray-800 mb-3">Demande envoyée ! ✨</h3>
+        <p className="font-sans text-purple-600 max-w-md mx-auto leading-relaxed mb-3">
+          Merci ! Nous avons bien reçu les détails de votre projet.
         </p>
-        <p className="font-sans text-blush-400 text-sm max-w-sm mx-auto leading-relaxed mb-8">
-          La fabrication commencera dès réception de votre paiement. Délai : 7 jours ouvrés.
+        <p className="font-sans text-purple-500/80 text-sm max-w-sm mx-auto leading-relaxed mb-8">
+          Nous allons l'étudier et vous reviendrons très vite par email avec un devis personnalisé et un lien de paiement sécurisé.
         </p>
         <button onClick={() => setFormStatus('idle')} className="btn-secondary text-sm">
-          Faire une nouvelle commande
+          Faire une nouvelle demande
         </button>
       </div>
     );
@@ -139,42 +154,64 @@ export default function CustomOrderForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-6">
 
-      {/* Prix fixe badge */}
-      <div className="flex items-center justify-center gap-3 p-4 rounded-2xl bg-blush-50 border border-rose-100">
-        <span className="font-sans text-sm text-blush-500">Prix fixe pour toute création personnalisée :</span>
-        <span className="font-serif text-3xl text-blush-600 font-light">29 €</span>
-      </div>
-
       {/* Name + Email */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="name" className="block font-sans text-xs tracking-widest uppercase text-blush-500 mb-2">
+          <label htmlFor="name" className="block font-sans text-xs tracking-widest uppercase text-purple-500 mb-2">
             Nom complet <span aria-hidden>*</span>
           </label>
-          <input id="name" {...register('name')} placeholder="Marie Dupont" className="input-field" autoComplete="name" />
+          <input id="name" {...register('name')} placeholder="Marie Dupont" className="w-full px-4 py-3 rounded-xl border border-purple-100 bg-purple-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all" autoComplete="name" />
           {errors.name && <p className="mt-1.5 font-sans text-xs text-red-500">{errors.name.message}</p>}
         </div>
         <div>
-          <label htmlFor="email" className="block font-sans text-xs tracking-widest uppercase text-blush-500 mb-2">
+          <label htmlFor="email" className="block font-sans text-xs tracking-widest uppercase text-purple-500 mb-2">
             Email <span aria-hidden>*</span>
           </label>
-          <input id="email" {...register('email')} type="email" placeholder="marie@exemple.fr" className="input-field" autoComplete="email" />
+          <input id="email" {...register('email')} type="email" placeholder="marie@exemple.fr" className="w-full px-4 py-3 rounded-xl border border-purple-100 bg-purple-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all" autoComplete="email" />
           {errors.email && <p className="mt-1.5 font-sans text-xs text-red-500">{errors.email.message}</p>}
         </div>
       </div>
 
       {/* Phone */}
       <div>
-        <label htmlFor="phone" className="block font-sans text-xs tracking-widest uppercase text-blush-500 mb-2">
-          Téléphone <span className="text-blush-300 normal-case tracking-normal">(facultatif)</span>
+        <label htmlFor="phone" className="block font-sans text-xs tracking-widest uppercase text-purple-500 mb-2">
+          Téléphone <span className="text-purple-300 normal-case tracking-normal">(facultatif)</span>
         </label>
-        <input id="phone" {...register('phone')} type="tel" placeholder="+33 6 12 34 56 78" className="input-field" autoComplete="tel" />
+        <input id="phone" {...register('phone')} type="tel" placeholder="+33 6 12 34 56 78" className="w-full px-4 py-3 rounded-xl border border-purple-100 bg-purple-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all" autoComplete="tel" />
+      </div>
+
+      <hr className="border-purple-100/50" />
+
+      {/* Modèle, Diamètre, Longueur */}
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="modele" className="block font-sans text-xs tracking-widest uppercase text-purple-500 mb-2">
+            Type de création souhaité <span aria-hidden>*</span>
+          </label>
+          <input id="modele" {...register('modele')} placeholder="Ex: Attrape-rêves, Suspension murale, etc." className="w-full px-4 py-3 rounded-xl border border-purple-100 bg-purple-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all" />
+          {errors.modele && <p className="mt-1.5 font-sans text-xs text-red-500">{errors.modele.message}</p>}
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="diametre" className="block font-sans text-xs tracking-widest uppercase text-purple-500 mb-2">
+              Diamètre approximatif
+            </label>
+            <input id="diametre" {...register('diametre')} placeholder="Ex: 30 cm" className="w-full px-4 py-3 rounded-xl border border-purple-100 bg-purple-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all" />
+          </div>
+          <div>
+            <label htmlFor="longueur" className="block font-sans text-xs tracking-widest uppercase text-purple-500 mb-2">
+              Longueur / Hauteur
+            </label>
+            <input id="longueur" {...register('longueur')} placeholder="Ex: 80 cm" className="w-full px-4 py-3 rounded-xl border border-purple-100 bg-purple-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all" />
+          </div>
+        </div>
       </div>
 
       {/* Color picker */}
       <div>
-        <p className="font-sans text-xs tracking-widest uppercase text-blush-500 mb-3">
-          Couleur principale <span aria-hidden>*</span>
+        <p className="font-sans text-xs tracking-widest uppercase text-purple-500 mb-3">
+          Couleur principale souhaitée <span aria-hidden>*</span>
         </p>
         <input type="hidden" {...register('color')} />
         <div className="flex flex-wrap gap-3" role="group" aria-label="Choix de la couleur">
@@ -183,7 +220,7 @@ export default function CustomOrderForm() {
               key={c.value} type="button" title={c.value} aria-label={c.value}
               aria-pressed={selectedColor === c.value}
               onClick={() => handleColorSelect(c.value)}
-              className="relative w-10 h-10 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blush-400"
+              className="relative w-10 h-10 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-400"
               style={{
                 backgroundColor: c.bg,
                 border: `2px solid ${c.border}`,
@@ -197,35 +234,35 @@ export default function CustomOrderForm() {
             </button>
           ))}
         </div>
-        {selectedColor && <p className="mt-2 font-sans text-xs text-blush-500">Sélectionnée : <strong>{selectedColor}</strong></p>}
+        {selectedColor && <p className="mt-2 font-sans text-xs text-purple-600">Sélectionnée : <strong>{selectedColor}</strong></p>}
         {errors.color && <p className="mt-1.5 font-sans text-xs text-red-500">{errors.color.message}</p>}
       </div>
 
       {/* Description */}
       <div>
-        <label htmlFor="description" className="block font-sans text-xs tracking-widest uppercase text-blush-500 mb-2">
-          Décrivez votre projet <span aria-hidden>*</span>
+        <label htmlFor="description" className="block font-sans text-xs tracking-widest uppercase text-purple-500 mb-2">
+          Détails supplémentaires <span aria-hidden>*</span>
         </label>
         <textarea
-          id="description" {...register('description')} rows={5}
-          placeholder="Dimensions souhaitées, style, pièce de la maison (chambre, salon…), occasion (cadeau, décoration…)…"
-          className="input-field resize-none"
+          id="description" {...register('description')} rows={4}
+          placeholder="Un motif particulier ? Une occasion spéciale ? Dites-nous tout..."
+          className="w-full px-4 py-3 rounded-xl border border-purple-100 bg-purple-50/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-300 focus:border-transparent transition-all resize-none"
         />
         {errors.description && <p className="mt-1.5 font-sans text-xs text-red-500">{errors.description.message}</p>}
       </div>
 
       {/* Image upload */}
       <div>
-        <p className="font-sans text-xs tracking-widest uppercase text-blush-500 mb-1">
-          Photo d&apos;inspiration <span className="text-blush-300 normal-case tracking-normal">(facultatif)</span>
+        <p className="font-sans text-xs tracking-widest uppercase text-purple-500 mb-1">
+          Photo d&apos;inspiration <span className="text-purple-300 normal-case tracking-normal">(facultatif)</span>
         </p>
-        <p className="font-sans text-xs text-blush-400 mb-3">
+        <p className="font-sans text-xs text-purple-400 mb-3">
           Une photo Pinterest ou une idée repérée. JPG / PNG, max 5 Mo.
         </p>
 
         {imageUrl ? (
-          <div className="flex items-start gap-4 p-4 bg-petal rounded-2xl border border-rose-100">
-            <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border border-rose-200">
+          <div className="flex items-start gap-4 p-4 bg-purple-50/50 rounded-2xl border border-purple-100">
+            <div className="relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border border-purple-200">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={imageUrl.startsWith('data:') ? imageUrl : `${imageUrl}?w=160`} alt="Inspiration" className="w-full h-full object-cover" />
             </div>
@@ -241,13 +278,13 @@ export default function CustomOrderForm() {
           </div>
         ) : (
           <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-            className="w-full flex flex-col items-center justify-center gap-3 px-6 py-8 border-2 border-dashed border-rose-200 rounded-2xl text-blush-400 hover:border-blush-300 hover:bg-petal/60 transition-all disabled:opacity-60">
+            className="w-full flex flex-col items-center justify-center gap-3 px-6 py-8 border-2 border-dashed border-purple-200 rounded-2xl text-purple-400 hover:border-purple-400 hover:bg-purple-50/50 transition-all disabled:opacity-60">
             {uploading
-              ? <><Loader2 size={28} className="animate-spin text-blush-400" /><span className="font-sans text-sm">Chargement…</span></>
-              : <><div className="w-12 h-12 rounded-2xl bg-petal flex items-center justify-center"><ImageIcon size={22} className="text-blush-400" /></div>
+              ? <><Loader2 size={28} className="animate-spin text-purple-500" /><span className="font-sans text-sm">Chargement…</span></>
+              : <><div className="w-12 h-12 rounded-2xl bg-white border border-purple-100 flex items-center justify-center shadow-sm"><ImageIcon size={22} className="text-purple-400" /></div>
                   <div className="text-center">
-                    <span className="font-sans text-sm font-medium text-blush-500 block">Cliquer pour ajouter une photo</span>
-                    <span className="font-sans text-xs text-blush-300 mt-1 block">JPG, PNG ou WebP — max 5 Mo</span>
+                    <span className="font-sans text-sm font-medium text-purple-600 block">Cliquer pour ajouter une photo</span>
+                    <span className="font-sans text-xs text-purple-400 mt-1 block">JPG, PNG ou WebP — max 5 Mo</span>
                   </div></>
             }
           </button>
@@ -267,15 +304,15 @@ export default function CustomOrderForm() {
 
       {/* Submit */}
       <button type="submit" disabled={formStatus === 'loading'}
-        className="btn-primary w-full py-4 text-base disabled:opacity-60 disabled:cursor-not-allowed">
+        className="w-full py-4 px-8 rounded-full bg-purple-600 text-white font-sans text-base font-medium tracking-wide hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-all disabled:opacity-60 disabled:cursor-not-allowed shadow-md shadow-purple-200">
         {formStatus === 'loading'
-          ? <><Loader2 size={18} className="animate-spin" /> Envoi en cours…</>
-          : 'Commander ma création — 29 € ✦'
+          ? <><Loader2 size={18} className="animate-spin inline mr-2" /> Envoi en cours…</>
+          : 'Demander mon devis gratuit ✨'
         }
       </button>
 
-      <p className="font-sans text-xs text-center text-blush-400">
-        Vous recevrez un lien de paiement par email · Fabrication sous 7 jours
+      <p className="font-sans text-xs text-center text-purple-400">
+        Vous recevrez un devis détaillé par email. Engagement gratuit.
       </p>
     </form>
   );
