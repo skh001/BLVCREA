@@ -20,13 +20,17 @@ export async function POST(req: NextRequest) {
       payment_method_types: ['card'],
       mode: 'payment',
       locale: 'fr',
+      // AJOUT : Forcer Stripe à demander le numéro de téléphone du client
+      phone_number_collection: {
+        enabled: true,
+      },
       line_items: [
         {
           price_data: {
             currency: 'eur',
-            unit_amount: Math.round(price * 100), // Stripe uses cents
+            unit_amount: Math.round(price * 100),
             product_data: {
-              name: title,
+              name: title, // Le Webhook va récupérer ce nom exact
               description: 'Création en macramé fait main — BLVCréa',
               metadata: { productId },
             },
